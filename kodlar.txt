@@ -66,8 +66,23 @@
 #7
 # >>> avg_rank=Team.objects.annotate(total_rank=F("rank")).aggregate(avg_rank=Avg("total_rank"))["avg_rank"]
 # >>> avg_rank
-#  Team.objects.annotate(sum_player=F("players")).filter(Q(rank__gt=avg_rank)&Q(sum_player__lte=3)).order_by('-rank').values("rank") 
-# <QuerySet [{'rank': 10.0}]>
+>>> Team.objects.annotate(sum_player=F("players")).filter(Q(rank__gt=avg_rank)&Q(sum_player__lte=3)).order_by('-rank').values("name","rank") 
+<QuerySet [{'name': 'galatasaray', 'rank': 10.0}]>
+>>>
+
+
+#1
+new_player=Player(name="gunay",surname="hesenova",age=9)
+>>> players=Player.objects.all()
+>>> new_player
+<Player: gunay>
+>>> for player in players:
+...  if new_player==player:
+...   player
+...  else:
+...   new_player.save()
+
+
 
 
 
