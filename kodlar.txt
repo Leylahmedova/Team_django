@@ -1,0 +1,75 @@
+
+#kodlar
+
+# >>> from django.db.models import Max,Min,Avg,Sum,F,Q
+# >>> from product.models import Team,Player
+#2
+#2.1
+# >>> team=Team.objects.get(name='besiktas')
+# >>> team
+# <Team: besiktas>
+# >>> avg_age=team.players.aggregate(avg_age=Avg('age'))['avg_age']
+# >>> avg_age
+# 18.0
+# >>>
+
+#2.2
+# >>> ortalama=Team.objects.aggregate(ortalama=Avg("players__age"))["ortalama"]
+# >>> ortalama
+# 19.0
+
+
+#5
+# <QuerySet [<Team: galatasaray>, <Team: fenerbahce>, <Team: besiktas>]>
+# >>> Team.objects.annotate(avg_age=Avg("players__age"),max_age=Max("players__age")).filter(~Q(name__startswith='t')&Q(Q(avg_age__gt=25)|Q(players__age=F("max_age"))))
+# <QuerySet [<Team: galatasaray>, <Team: fenerbahce>, <Team: besiktas>]>
+
+
+#6
+# Player.objects.filter(Q(~Q(name__startswith='Hormet')&~Q(surname__endswith='Hemidov'))|Q(age__gt=avg_age))                             
+# <QuerySet [<Player: leyla>, <Player: narmin>, <Player: leyla>]>
+
+
+
+#3
+# players=Player.objects.all() 
+# >>> Max=players.aggregate(Max("age"))
+# >>> Max
+# {'age__max': 19.0}
+# >>> maxim_age=Max['age__max']
+# >>> maxim_age
+# 19.0
+# >>> team=players.filter(Q(age=maxim_age))[0]     
+# >>> team
+# <Player: leyla>
+# >>> komanda=Team.objects.filter(Q(players=team))
+# >>> komanda
+# <QuerySet [<Team: galatasaray>]>
+# >>>
+
+#4
+# >>> Min=players.aggregate(Min('age')) 
+# >>> Min
+# {'age__min': 19.0}
+# >>> minum_age=Min['age__min']
+# >>> minum_age
+# 19.0
+# >>> team=players.filter(Q(age=minum_age))[0]
+# >>> team
+# <Player: leyla>
+# >>> komanda=Team.objects.filter(Q(players=team))
+# >>> komanda
+# <QuerySet [<Team: galatasaray>]>
+# >>>
+
+
+#7
+# >>> avg_rank=Team.objects.annotate(total_rank=F("rank")).aggregate(avg_rank=Avg("total_rank"))["avg_rank"]
+# >>> avg_rank
+#  Team.objects.annotate(sum_player=F("players")).filter(Q(rank__gt=avg_rank)&Q(sum_player__lte=3)).order_by('-rank').values("rank") 
+# <QuerySet [{'rank': 10.0}]>
+
+
+
+
+
